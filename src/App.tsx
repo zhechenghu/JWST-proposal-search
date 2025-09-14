@@ -5,7 +5,8 @@ import { SearchBar } from './components/SearchBar';
 import { SearchResults } from './components/SearchResults';
 import { MetadataTable } from './components/MetadataTable';
 import { ProposalPage } from './components/ProposalPage';
-import { Telescope, Database, Search as SearchIcon, Github } from 'lucide-react';
+import { Telescope, Database, Search as SearchIcon, Github, ListChecks } from 'lucide-react';
+import { ListCrossMatch } from './components/ListCrossMatch.tsx';
 import { ThemeToggle } from './components/ThemeToggle';
 
 // moved into component to ensure HMR re-instantiates
@@ -13,7 +14,7 @@ import { ThemeToggle } from './components/ThemeToggle';
 function HomePage() {
   const [searchResults, setSearchResults] = useState<SearchableDocument[]>([]);
   const [currentQuery, setCurrentQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'search' | 'metadata'>('search');
+  const [activeTab, setActiveTab] = useState<'search' | 'metadata' | 'crossmatch'>('search');
 
   const searchEngine = useMemo(() => new SearchEngine(), []);
 
@@ -75,7 +76,15 @@ function HomePage() {
                 }`}
             >
               <SearchIcon className="h-4 w-4 mr-2" />
-              Search
+              Single Search
+            </button>
+            <button
+              onClick={() => setActiveTab('crossmatch')}
+              className={`ml-1 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md ${activeTab === 'crossmatch' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700'
+                }`}
+            >
+              <ListChecks className="h-4 w-4 mr-2" />
+              List Cross Match
             </button>
             <button
               onClick={() => setActiveTab('metadata')}
@@ -97,6 +106,25 @@ function HomePage() {
           </section>
         )}
 
+        {activeTab === 'crossmatch' && (
+          <section className="mt-16">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-3 mb-4">
+                <ListChecks className="h-8 w-8 text-blue-600" />
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  List Cross Match
+                </h2>
+              </div>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+                Enter a comma-separated list of terms, e.g., list of source names.
+                Each term will be searched in three ways: fuzzy, contains, and whole-word exact matching.
+                Matched proposal IDs will be listed.
+              </p>
+            </div>
+            <ListCrossMatch searchEngine={searchEngine} />
+          </section>
+        )}
+
         {activeTab === 'metadata' && (
           <section className="mt-16">
             <div className="text-center mb-8">
@@ -113,6 +141,8 @@ function HomePage() {
             <MetadataTable data={metadataItems} />
           </section>
         )}
+
+
 
         {/* Statistics */}
         <section className="mt-16 bg-white rounded-xl shadow-sm border border-gray-200 p-8 dark:bg-gray-800 dark:border-gray-700">
