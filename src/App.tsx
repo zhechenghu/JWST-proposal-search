@@ -50,7 +50,7 @@ function HomePage() {
             </div>
             <div className="flex items-center space-x-2">
               <a
-                href="https://github.com"
+                href="https://github.com/zhechenghu/JWST-proposal-search"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-sm transition-colors dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-700"
@@ -116,7 +116,7 @@ function HomePage() {
 
         {/* Statistics */}
         <section className="mt-16 bg-white rounded-xl shadow-sm border border-gray-200 p-8 dark:bg-gray-800 dark:border-gray-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2 dark:text-blue-400">
                 {metadataItems.length}
@@ -131,6 +131,14 @@ function HomePage() {
               </div>
               <div className="text-sm text-gray-600 uppercase tracking-wide dark:text-gray-300">
                 Observation Cycles
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2 dark:text-purple-400">
+                2025-09-14
+              </div>
+              <div className="text-sm text-gray-600 uppercase tracking-wide dark:text-gray-300">
+                Last Update
               </div>
             </div>
           </div>
