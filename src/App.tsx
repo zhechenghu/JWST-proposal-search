@@ -31,7 +31,7 @@ function HomePage() {
   const metadataItems = searchEngine.getMetadata();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -66,7 +66,7 @@ function HomePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
         <div className="mb-8 flex justify-center">
           <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -97,50 +97,44 @@ function HomePage() {
           </div>
         </div>
 
-        {activeTab === 'search' && (
-          <section className="mb-12">
-            <div className="mb-8">
-              <SearchBar onSearch={handleSearch} />
-            </div>
-            <SearchResults results={searchResults} query={currentQuery} />
-          </section>
-        )}
+        <section className={`${activeTab === 'search' ? '' : 'hidden'} mb-12`}>
+          <div className="mb-8">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+          <SearchResults results={searchResults} query={currentQuery} />
+        </section>
 
-        {activeTab === 'crossmatch' && (
-          <section className="mt-16">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <ListChecks className="h-8 w-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  List Cross Match
-                </h2>
-              </div>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
-                Enter a comma-separated list of terms, e.g., list of source names.
-                Each term will be searched in three ways: fuzzy, contains, and whole-word exact matching.
-                Matched proposal IDs will be listed.
-              </p>
+        <section className={`${activeTab === 'crossmatch' ? '' : 'hidden'} mt-16`}>
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <ListChecks className="h-8 w-8 text-blue-600" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                List Cross Match
+              </h2>
             </div>
-            <ListCrossMatch searchEngine={searchEngine} />
-          </section>
-        )}
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+              Enter a comma-separated list of terms (e.g., source names).
+              Each term is searched in three ways: fuzzy match, substring match, and exact whole-word match.
+              All matching proposal IDs will be displayed. The search runs locally in your browser. Processing about 50 terms takes ~12 seconds.
+            </p>
+          </div>
+          <ListCrossMatch searchEngine={searchEngine} />
+        </section>
 
-        {activeTab === 'metadata' && (
-          <section className="mt-16">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <Database className="h-8 w-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Proposal Metadata
-                </h2>
-              </div>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
-                Browse and filter research proposals by their metadata. Each column can be filtered independently.
-              </p>
+        <section className={`${activeTab === 'metadata' ? '' : 'hidden'} mt-16`}>
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <Database className="h-8 w-8 text-blue-600" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Proposal Metadata
+              </h2>
             </div>
-            <MetadataTable data={metadataItems} />
-          </section>
-        )}
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+              Browse and filter research proposals by their metadata. Each column can be filtered independently.
+            </p>
+          </div>
+          <MetadataTable data={metadataItems} />
+        </section>
 
 
 
@@ -176,7 +170,7 @@ function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-16 bg-white shadow-sm border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800 dark:text-white">
+      <footer className="mt-auto bg-white shadow-sm border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800 dark:text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">

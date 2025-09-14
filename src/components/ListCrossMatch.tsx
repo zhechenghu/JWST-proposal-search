@@ -21,7 +21,7 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
 
     const allDocuments = useMemo(() => searchEngine.getAllDocuments(), [searchEngine]);
 
-    const runCrossMatch = () => {
+    const runCrossMatch = async () => {
         const terms = input
             .split(',')
             .map(t => t.trim())
@@ -33,6 +33,9 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
         }
 
         setIsRunning(true);
+
+        // Yield to the event loop so the loading UI can render before heavy work
+        await new Promise(resolve => setTimeout(resolve, 0));
 
         // For each term, run a fuzzy search via SearchEngine, a substring contains search, and an exact search
         const computedRows: CrossMatchRow[] = terms.map(term => {
@@ -151,7 +154,7 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
                     <button
                         onClick={downloadCSV}
                         disabled={rows.length === 0}
-                        className={`inline-flex items-center px-4 py-2 rounded-lg shadow-sm transition-colors duration-200 ${rows.length > 0 ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400'}`}
+                        className={`inline-flex items-center px-4 py-2 text-white rounded-lg shadow-sm transition-colors duration-200 ${rows.length > 0 ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400'}`}
                     >
                         <Download className="h-5 w-5 mr-2" />
                         Download CSV
@@ -159,7 +162,15 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="relative overflow-x-auto" aria-busy={isRunning}>
+                {isRunning && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-sm dark:bg-gray-900/60">
+                        <div className="inline-flex items-center px-4 py-2 rounded-lg border border-gray-200 bg-white shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                            <Loader2 className="h-5 w-5 mr-2 animate-spin text-blue-600 dark:text-blue-400" />
+                            <span className="text-sm text-gray-700 dark:text-gray-200">Cross matching…</span>
+                        </div>
+                    </div>
+                )}
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-900">
                         <tr>
