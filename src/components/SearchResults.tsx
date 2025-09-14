@@ -26,6 +26,13 @@ interface SearchResultsProps {
 }
 
 export function SearchResults({ results, query }: SearchResultsProps) {
+  const formatValueOrNone = (value: unknown, unit?: string) => {
+    if (value === undefined || value === null) return 'None';
+    if (typeof value === 'string' && value.trim() === '') return 'None';
+    if (typeof value === 'number' && !isFinite(value)) return 'None';
+    return unit ? `${value} ${unit}` : String(value);
+  };
+
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
     const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -105,6 +112,9 @@ export function SearchResults({ results, query }: SearchResultsProps) {
               <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
                 {result.metadata.type}
               </span>
+              <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full font-medium">
+                {formatValueOrNone(result.metadata.proposal_type)}
+              </span>
             </div>
           </div>
 
@@ -115,15 +125,15 @@ export function SearchResults({ results, query }: SearchResultsProps) {
             </div>
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4" />
-              <span>{result.metadata.exclusive_access_period_months} months</span>
+              <span>{formatValueOrNone(result.metadata.exclusive_access_period_months, 'months')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
-              <span>{result.metadata.instrument_mode}</span>
+              <span>{formatValueOrNone(result.metadata.instrument_mode)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <User className="h-4 w-4" />
-              <span className="truncate">{result.metadata.pi_and_co_pis}</span>
+              <span className="truncate">{formatValueOrNone(result.metadata.pi_and_co_pis)}</span>
             </div>
           </div>
 

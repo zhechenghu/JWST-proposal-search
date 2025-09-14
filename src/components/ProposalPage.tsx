@@ -45,6 +45,13 @@ export function ProposalPage() {
 
   const htmlContent = marked.parse(document.content);
 
+  const formatValueOrNone = (value: unknown, unit?: string) => {
+    if (value === undefined || value === null) return 'None';
+    if (typeof value === 'string' && value.trim() === '') return 'None';
+    if (typeof value === 'number' && !isFinite(value)) return 'None';
+    return unit ? `${value} ${unit}` : String(value);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
       {/* Header */}
@@ -90,27 +97,32 @@ export function ProposalPage() {
             <div className="flex items-center space-x-2">
               <Calendar className="h-4 w-4 text-gray-400" />
               <span className="text-gray-600 dark:text-gray-300">Cycle:</span>
-              <span className="font-medium">{document.metadata.cycle}</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.cycle)}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 text-gray-400" />
+              <span className="text-gray-600 dark:text-gray-300">Proposal Type:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.proposal_type)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4 text-gray-400" />
               <span className="text-gray-600 dark:text-gray-300">Access Period:</span>
-              <span className="font-medium">{document.metadata.exclusive_access_period_months} months</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.exclusive_access_period_months, 'months')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Settings className="h-4 w-4 text-gray-400" />
               <span className="text-gray-600 dark:text-gray-300">Instrument:</span>
-              <span className="font-medium">{document.metadata.instrument_mode}</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.instrument_mode)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4 text-gray-400" />
               <span className="text-gray-600 dark:text-gray-300">Time:</span>
-              <span className="font-medium">{document.metadata.prime_parallel_time_hours} hours</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.prime_parallel_time_hours, 'hours')}</span>
             </div>
             <div className="flex items-start space-x-2 md:col-span-2">
               <User className="h-4 w-4 text-gray-400 mt-0.5" />
               <span className="text-gray-600 dark:text-gray-300">Investigators:</span>
-              <span className="font-medium">{document.metadata.pi_and_co_pis}</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{formatValueOrNone(document.metadata.pi_and_co_pis)}</span>
             </div>
           </div>
         </div>
