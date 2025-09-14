@@ -7,6 +7,8 @@ A modern web application for easy searching and browsing approved James Webb Spa
 - **Full-text search** across proposal abstracts, observation tables, and descriptions
 - **Metadata Browser** with sortable columns and filters
 
+All files are extracted from the public PDF files of the approved proposals. You can find the [extracted files here](https://github.com/zhechenghu/JWST-proposal-search/tree/main/src/data).
+
 **Explore the universe with JWST!** 🔭✨
 
 ## Notes
