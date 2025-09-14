@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SearchEngine, SearchableDocument } from '../utils/searchEngine';
 import { Search, Loader2, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,27 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
     const [isRunning, setIsRunning] = useState(false);
 
     const allDocuments = useMemo(() => searchEngine.getAllDocuments(), [searchEngine]);
+
+    // Keys for sessionStorage
+    const STORAGE_INPUT_KEY = 'crossmatch:input';
+    const STORAGE_ROWS_KEY = 'crossmatch:rows';
+
+    // Restore saved state on mount
+    useEffect(() => {
+        try {
+            const savedInput = sessionStorage.getItem(STORAGE_INPUT_KEY);
+            const savedRows = sessionStorage.getItem(STORAGE_ROWS_KEY);
+            if (savedInput) setInput(savedInput);
+            if (savedRows) {
+                const parsed: CrossMatchRow[] = JSON.parse(savedRows);
+                if (Array.isArray(parsed)) {
+                    setRows(parsed);
+                }
+            }
+        } catch (_) {
+            // ignore storage errors
+        }
+    }, []);
 
     const runCrossMatch = async () => {
         const terms = input
@@ -84,6 +105,14 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
 
         setRows(computedRows);
         setIsRunning(false);
+
+        // Persist results
+        try {
+            sessionStorage.setItem(STORAGE_INPUT_KEY, input);
+            sessionStorage.setItem(STORAGE_ROWS_KEY, JSON.stringify(computedRows));
+        } catch (_) {
+            // ignore storage errors
+        }
     };
 
     const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -95,7 +124,8 @@ export function ListCrossMatch({ searchEngine }: ListCrossMatchProps) {
         return ids.map((id, idx) => (
             <span key={`${id}-${idx}`}>
                 <Link
-                    to={`/proposal/${id}`}
+                    to={{ pathname: `/proposal/${id}` }}
+                    state={{ origin: 'crossmatch' }}
                     className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                     {id}

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Clock, Settings, FileText } from 'lucide-react';
 import { SearchEngine } from '../utils/searchEngine';
 import { marked } from 'marked';
@@ -16,6 +16,9 @@ marked.setOptions({
 export function ProposalPage() {
   const { id } = useParams<{ id: string }>();
   const searchEngine = useMemo(() => new SearchEngine(), []);
+  const location = useLocation();
+  const [sp] = useSearchParams();
+  const origin = ((location.state as any)?.origin || sp.get('origin') || '') as string;
 
   const document = searchEngine.getAllDocuments().find(doc =>
     doc.metadata.id.toString() === id
@@ -29,11 +32,11 @@ export function ProposalPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Proposal Not Found</h1>
           <p className="text-gray-600 dark:text-gray-300 mb-6">The requested proposal could not be found.</p>
           <Link
-            to="/"
+            to={origin === 'crossmatch' ? `/?tab=crossmatch` : `/?tab=search`}
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Search
+            Back to Results
           </Link>
         </div>
       </div>
@@ -49,11 +52,11 @@ export function ProposalPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-start justify-between mb-4">
             <Link
-              to="/"
+              to={origin === 'crossmatch' ? `/?tab=crossmatch` : `/?tab=search`}
               className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Search
+              Back to Results
             </Link>
             <ThemeToggle />
           </div>

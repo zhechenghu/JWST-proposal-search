@@ -96,6 +96,7 @@ export function SearchResults({ results, query }: SearchResultsProps) {
           <div className="flex items-start justify-between mb-3">
             <Link
               to={`/proposal/${result.metadata.id}`}
+              state={{ q: query, origin: 'search' }}
               className="text-lg font-semibold text-gray-900 dark:text-white flex-1 hover:text-blue-600 transition-colors"
             >
               {highlightText(result.metadata.program_title, query)}
@@ -122,7 +123,7 @@ export function SearchResults({ results, query }: SearchResultsProps) {
             </div>
             <div className="flex items-center space-x-2">
               <User className="h-4 w-4" />
-              <span className="truncate">{result.metadata.pi_and_co_pis.split(' ')[1]}</span>
+              <span className="truncate">{result.metadata.pi_and_co_pis}</span>
             </div>
           </div>
 
@@ -133,6 +134,7 @@ export function SearchResults({ results, query }: SearchResultsProps) {
           <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
             <Link
               to={`/proposal/${result.metadata.id}`}
+              state={{ q: query, origin: 'search' }}
               className="text-blue-600 hover:text-blue-700 transition-colors"
             >
               More Information →

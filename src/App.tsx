@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useMemo, useState, useEffect } from 'react';
+import { Routes, Route, useSearchParams } from 'react-router-dom';
 import { SearchEngine, SearchableDocument } from './utils/searchEngine';
 import { SearchBar } from './components/SearchBar';
 import { SearchResults } from './components/SearchResults';
@@ -16,16 +16,65 @@ function HomePage() {
   const [currentQuery, setCurrentQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'search' | 'metadata' | 'crossmatch'>('search');
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchEngine = useMemo(() => new SearchEngine(), []);
+
+  // Restore tab from URL and search state from sessionStorage
+  useEffect(() => {
+    const tabParam = (searchParams.get('tab') as 'search' | 'metadata' | 'crossmatch') || 'search';
+    setActiveTab(tabParam);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const STORAGE_QUERY_KEY = 'search:query';
+    const STORAGE_IDS_KEY = 'search:ids';
+    try {
+      const savedQuery = sessionStorage.getItem(STORAGE_QUERY_KEY) || '';
+      const savedIds = sessionStorage.getItem(STORAGE_IDS_KEY);
+      setCurrentQuery(savedQuery);
+      if (savedIds) {
+        const ids: Array<string | number> = JSON.parse(savedIds);
+        const idSet = new Set(ids.map(String));
+        const docs = searchEngine.getAllDocuments().filter(d => idSet.has(String(d.metadata.id)));
+        setSearchResults(docs);
+      } else {
+        setSearchResults([]);
+      }
+    } catch (_) {
+      setSearchResults([]);
+    }
+  }, [searchEngine]);
 
   const handleSearch = (query: string) => {
     setCurrentQuery(query);
+    const params = new URLSearchParams(searchParams);
+    params.delete('q');
+    params.set('tab', 'search');
+    setSearchParams(params);
+
     if (query.trim()) {
       const results = searchEngine.search(query);
       setSearchResults(results);
+      try {
+        sessionStorage.setItem('search:query', query);
+        sessionStorage.setItem('search:ids', JSON.stringify(results.map(r => r.metadata.id)));
+      } catch (_) { }
     } else {
       setSearchResults([]);
+      try {
+        sessionStorage.removeItem('search:query');
+        sessionStorage.removeItem('search:ids');
+      } catch (_) { }
     }
+  };
+
+  const setTab = (tab: 'search' | 'crossmatch' | 'metadata') => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams);
+    // Ensure legacy q param is removed when switching tabs
+    params.delete('q');
+    params.set('tab', tab);
+    setSearchParams(params);
   };
 
   const metadataItems = searchEngine.getMetadata();
@@ -71,7 +120,7 @@ function HomePage() {
         <div className="mb-8 flex justify-center">
           <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <button
-              onClick={() => setActiveTab('search')}
+              onClick={() => setTab('search')}
               className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-md ${activeTab === 'search' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700'
                 }`}
             >
@@ -79,7 +128,7 @@ function HomePage() {
               Single Search
             </button>
             <button
-              onClick={() => setActiveTab('crossmatch')}
+              onClick={() => setTab('crossmatch')}
               className={`ml-1 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md ${activeTab === 'crossmatch' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700'
                 }`}
             >
@@ -87,7 +136,7 @@ function HomePage() {
               List Cross Match
             </button>
             <button
-              onClick={() => setActiveTab('metadata')}
+              onClick={() => setTab('metadata')}
               className={`ml-1 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md ${activeTab === 'metadata' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700'
                 }`}
             >
@@ -99,7 +148,7 @@ function HomePage() {
 
         <section className={`${activeTab === 'search' ? '' : 'hidden'} mb-12`}>
           <div className="mb-8">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearch={handleSearch} initialQuery={currentQuery} />
           </div>
           <SearchResults results={searchResults} query={currentQuery} />
         </section>

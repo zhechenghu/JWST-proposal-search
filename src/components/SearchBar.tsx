@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, X } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
+  initialQuery?: string;
 }
 
-export function SearchBar({ onSearch, placeholder = "Search through all abstracts, observation tables and descriptions..." }: SearchBarProps) {
-  const [query, setQuery] = useState('');
+export function SearchBar({ onSearch, placeholder = "Search through all abstracts, observation tables and descriptions...", initialQuery }: SearchBarProps) {
+  const [query, setQuery] = useState(initialQuery ?? '');
+
+  // Keep local input in sync when parent-provided initialQuery changes (e.g., restored from storage)
+  useEffect(() => {
+    setQuery(initialQuery ?? '');
+  }, [initialQuery]);
 
   const handleInputChange = (value: string) => {
     setQuery(value);
