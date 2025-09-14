@@ -81,8 +81,10 @@ export function SearchResults({ results, query }: SearchResultsProps) {
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
           Search Results ({results.length})
         </h2>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className="text-sm text-gray-600 dark:text-gray-500 text-center">
           Found {results.length} documents matching "{query}"
+          <br />
+          Note: No highlight means no exact match - check proposals carefully
         </span>
       </div>
 
