@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic markdown styles for rendered content */
+.markdown {
+    color: rgb(55 65 81);
+    line-height: 1.75;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+    color: rgb(17 24 39);
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.markdown h1 {
+    font-size: 1.875rem;
+}
+
+.markdown h2 {
+    font-size: 1.5rem;
+}
+
+.markdown h3 {
+    font-size: 1.25rem;
+}
+
+.markdown p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown ul {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+    margin: 0.75rem 0;
+}
+
+.markdown ol {
+    list-style-type: decimal;
+    padding-left: 1.25rem;
+    margin: 0.75rem 0;
+}
+
+.markdown li {
+    margin: 0.25rem 0;
+}
+
+.markdown strong {
+    color: rgb(17 24 39);
+}
+
+.markdown code {
+    background-color: rgb(243 244 246);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    color: rgb(31 41 55);
+}
+
+.markdown pre {
+    background-color: rgb(243 244 246);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
+
+.markdown a {
+    color: rgb(37 99 235);
+    text-decoration: underline;
+}
+
+.markdown table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    border: 1px solid rgb(209 213 219);
+}
+
+.markdown th,
+.markdown td {
+    border: 1px solid rgb(209 213 219);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+
+.markdown th {
+    background-color: rgb(249 250 251);
+    font-weight: 600;
+}
+
+.markdown tbody tr:nth-child(even) {
+    background-color: rgb(249 250 251);
+}
+
+/* Dark mode markdown overrides */
+.dark .markdown {
+    color: rgb(229 231 235);
+}
+
+.dark .markdown h1,
+.dark .markdown h2,
+.dark .markdown h3,
+.dark .markdown h4,
+.dark .markdown h5,
+.dark .markdown h6 {
+    color: rgb(243 244 246);
+}
+
+.dark .markdown strong {
+    color: rgb(243 244 246);
+}
+
+.dark .markdown code {
+    background-color: rgb(31 41 55);
+    color: rgb(229 231 235);
+}
+
+.dark .markdown pre {
+    background-color: rgb(31 41 55);
+}
+
+/* Dark mode table styles */
+.dark .markdown table {
+    border-color: rgb(75 85 99);
+}
+
+.dark .markdown th,
+.dark .markdown td {
+    border-color: rgb(75 85 99);
+}
+
+.dark .markdown th {
+    background-color: rgb(31 41 55);
+    color: rgb(229 231 235);
+}
+
+.dark .markdown tbody tr:nth-child(even) {
+    background-color: rgb(31 41 55);
+}
+
+.dark .markdown a {
+    color: rgb(96 165 250);
+}
+
+/* Disable transitions during theme switch */
+.no-theme-transition,
+.no-theme-transition * {
+    transition: none !important;
+}
